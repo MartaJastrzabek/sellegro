@@ -21,8 +21,10 @@ public class AuctionController {
                            @RequestParam(required = false) String sort,
                            AuctionFilters auctionFilters) {
         List<Auction> auctions;
-        if(sort != null) {
-            auctions = auctionService.findAllSorted(sort);
+        if (auctionFilters != null && sort != null) {
+            auctions = auctionService.findAllForFiltersSorted(auctionFilters, sort);
+        } else if (sort != null) {
+            auctions = auctionService.getAllAuctionsSorted(sort);
         } else {
             auctions = auctionService.findAllForFilters(auctionFilters);
         }

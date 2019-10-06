@@ -19,22 +19,26 @@
         <thead>
         <tr>
             <th>
-                <a href="/auctions?sort=title">
+                <a th:href="'/auctions?sort=title' + ${filters != null ? ('&title=' + filters.title +
+                 '&carMaker=' + filters.carMaker + '&carModel=' + filters.carModel + '&color=' + filters.color) : ''}">
                     Tytuł
                 </a>
             </th>
             <th>
-                <a href="/auctions?sort=price">
+                <a th:href="'/auctions?sort=price' + ${filters != null ? ('&title=' + filters.title +
+                 '&carMaker=' + filters.carMaker + '&carModel=' + filters.carModel + '&color=' + filters.color) : ''}">
                     Cena
                 </a>
             </th>
             <th>
-                <a href="/auctions?sort=color">
+                <a th:href="'/auctions?sort=color' + ${filters != null ? ('&title=' + filters.title +
+                 '&carMaker=' + filters.carMaker + '&carModel=' + filters.carModel + '&color=' + filters.color) : ''}">
                     Kolor
                 </a>
             </th>
             <th>
-                <a href="/auctions?sort=endDate">
+                <a th:href="'/auctions?sort=endDate' + ${filters != null ? ('&title=' + filters.title +
+                 '&carMaker=' + filters.carMaker + '&carModel=' + filters.carModel + '&color=' + filters.color) : ''}">
                     Do kiedy
                 </a>
             </th>
