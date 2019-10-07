@@ -13,8 +13,9 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     List<Auction> findFirst5ByOrderByPriceDesc();
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Auction a SET a.title = :title WHERE a.id = :id")
-    void setTitle(long id, String title);
+//    // query for setTitles method from AuctionService
+//    @Modifying
+//    @Transactional
+//    @Query("UPDATE Auction a SET a.title = :title WHERE a.id = :id")
+//    void setTitle(long id, String title);
 }

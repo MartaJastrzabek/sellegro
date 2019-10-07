@@ -2,6 +2,7 @@ package pl.javastart.sellegro.auction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
@@ -26,24 +27,43 @@ public class AuctionService {
 
     public AuctionService(AuctionRepository auctionRepository) {
         this.auctionRepository = auctionRepository;
-        setTitles(auctionRepository);
+//        // for setTitles method
+//        setTitles(auctionRepository);
+        auctionRepository.saveAll(setTitles());
+
     }
 
     private static final String[] ADJECTIVES = {"Niesamowity", "Jedyny taki", "IGŁA", "HIT", "Jak nowy",
             "Perełka", "OKAZJA", "Wyjątkowy"};
 
-    private void setTitles(AuctionRepository auctionRepository) {
+    //for saveAll method:
+    private List<Auction> setTitles() {
         List<Auction> allAuctions = auctionRepository.findAll();
         Random random = new Random();
         String randomAdjective;
         String title;
 
-        for (Auction auction : allAuctions) {
+        for (int i = 0; i < allAuctions.size(); i++) {
             randomAdjective = ADJECTIVES[random.nextInt(ADJECTIVES.length)];
-            title = randomAdjective + " " + auction.getCarMake() + " " + auction.getCarModel();
-            auctionRepository.setTitle(auction.getId(), title);
+            title = randomAdjective + " " + allAuctions.get(i).getCarMake() + " " + allAuctions.get(i).getCarModel();
+            allAuctions.get(i).setTitle(title);
         }
+        return allAuctions;
     }
+
+//    // custom made setTitles method
+//    private void setTitles(AuctionRepository auctionRepository) {
+//        List<Auction> allAuctions = auctionRepository.findAll();
+//        Random random = new Random();
+//        String randomAdjective;
+//        String title;
+//
+//        for (Auction auction : allAuctions) {
+//            randomAdjective = ADJECTIVES[random.nextInt(ADJECTIVES.length)];
+//            title = randomAdjective + " " + auction.getCarMake() + " " + auction.getCarModel();
+//            auctionRepository.setTitle(auction.getId(), title);
+//        }
+//    }
 
     public List<Auction> get5mostExpensiveAuctions() {
         return auctionRepository.findFirst5ByOrderByPriceDesc();
@@ -59,12 +79,18 @@ public class AuctionService {
 
     public List<Auction> findAllForFilters(AuctionFilters auctionFilters) {
         Auction checkFilter = checkAuctionFilters(auctionFilters);
-        return auctionRepository.findAll(Example.of(checkFilter));
+        ExampleMatcher example = ExampleMatcher.matching()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase();
+        return auctionRepository.findAll(Example.of(checkFilter, example));
     }
 
     public List<Auction> findAllForFiltersSorted(AuctionFilters auctionFilters, String sort) {
         Auction checkFilter = checkAuctionFilters(auctionFilters);
-        return auctionRepository.findAll(Example.of(checkFilter), Sort.by(sort));
+        ExampleMatcher example = ExampleMatcher.matching()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase();
+        return auctionRepository.findAll(Example.of(checkFilter, example), Sort.by(sort));
     }
 
     private Auction checkAuctionFilters(AuctionFilters auctionFilters) {
